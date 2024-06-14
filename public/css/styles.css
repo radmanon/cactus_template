@@ -245,3 +245,12 @@ footer .cart-info p {
     left: 50%;
     transform: translateX(-50%);
 }
+
+#search-bar {
+    width: 70%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    outline: none;
+}
