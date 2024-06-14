@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.querySelectorAll('.menu-item');
     const searchBar = document.getElementById('search-bar');
     const productsContainer = document.getElementById('products');
+    const searchResultContainer = document.getElementById('search-result-container');
 
     hamburgerMenu.addEventListener('click', () => {
         popupMenu.style.display = 'flex';
@@ -27,6 +28,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Function to create a card with "Read More" functionality
+    function createCard(title, content) {
+        const card = document.createElement('div');
+        card.classList.add('search-result-card');
+        const words = content.split(' ');
+        if (words.length > 100) {
+            const truncatedContent = words.slice(0, 100).join(' ');
+            const remainingContent = words.slice(100).join(' ');
+            card.innerHTML = `
+        <h2>${title}</h2>
+        <p>${truncatedContent}<span class="ellipsis">...</span><span class="more-text">${remainingContent}</span></p>
+        <a href="#" class="read-more">Read More</a>
+      `;
+            card.querySelector('.read-more').addEventListener('click', (e) => {
+                e.preventDefault();
+                card.querySelector('.ellipsis').style.display = 'none';
+                card.querySelector('.more-text').style.display = 'inline';
+                card.querySelector('.read-more').style.display = 'none';
+            });
+        } else {
+            card.innerHTML = `
+        <h2>${title}</h2>
+        <p>${content}</p>
+      `;
+        }
+        return card;
+    }
+
     // Add event listener to the search bar
     searchBar.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -34,20 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(`/search?q=${query}`)
                 .then(response => response.json())
                 .then(data => {
-                    productsContainer.innerHTML = '';
-                    data.results.forEach(result => {
-                        const productCard = document.createElement('div');
-                        productCard.classList.add('product-card');
-                        productCard.innerHTML = `
-                            <img src="${result.image}" alt="${result.name}">
-                            <div class="product-info">
-                                <h2>${result.name}</h2>
-                                <p>${result.description}</p>
-                            </div>
-                            <button class="buy-btn">🛒</button>
-                        `;
-                        productsContainer.appendChild(productCard);
-                    });
+                    const questionCard = createCard('Question', query);
+                    const answerCard = createCard('Answer', data.result);
+                    searchResultContainer.appendChild(questionCard);
+                    searchResultContainer.appendChild(answerCard);
                 })
                 .catch(error => console.error('Error:', error));
         }

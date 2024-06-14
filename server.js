@@ -14,16 +14,19 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// Search route to fetch data from Hugging Face API
+// Search route to fetch data from Eden AI API
 app.get('/search', async (req, res) => {
     const query = req.query.q;
-    const apiKey = process.env.HUGGING_FACE_API_KEY; // Get API key from environment variables
+    const apiKey = process.env.EDENAI_API_KEY; // Get API key from environment variables
 
     console.log(`Using API Key: ${apiKey}`);
 
     try {
-        const response = await axios.post('https://api-inference.huggingface.co/models/gpt2', {
-            inputs: `Search result for "${query}":`,
+        const response = await axios.post('https://api.edenai.run/v2/text/generation', {
+            providers: "openai",
+            text: `Please provide information about "${query}":`,
+            temperature: 0.7,
+            max_tokens: 256
         }, {
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
@@ -31,11 +34,18 @@ app.get('/search', async (req, res) => {
             }
         });
 
-        const searchResult = response.data[0].generated_text.trim();
-        res.json({ results: [{ name: query, description: searchResult, image: '/imgs/default.png' }] });
+        console.log('Eden AI Response:', response.data);
+
+        // Check if the response contains results
+        if (response.data.openai && response.data.openai.status === 'success') {
+            const searchResult = response.data.openai.generated_text.trim();
+            res.json({ result: searchResult });
+        } else {
+            res.json({ result: 'No results found in response' });
+        }
     } catch (error) {
-        console.error('Error fetching data from Hugging Face:', error.response ? error.response.data : error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error fetching data from Eden AI:', error.response ? error.response.data : error.message);
+        res.json({ result: 'Internal Server Error' });
     }
 });
 

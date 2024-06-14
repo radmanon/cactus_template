@@ -62,6 +62,12 @@ main {
     align-items: center;
     justify-content: center;
     padding-top: 20px;
+
+    /* Change from relative to fixed */
+    height: 100%;
+    /* Ensure it takes the full height */
+    top: 0;
+    left: 0;
 }
 
 .menu {
@@ -253,4 +259,25 @@ footer .cart-info p {
     border: 1px solid #e0e0e0;
     border-radius: 5px;
     outline: none;
+}
+
+.search-result-card {
+    background-color: #e0f7fa;
+    border-radius: 20px;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.more-text {
+    display: none;
+}
+
+.read-more {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
 }
