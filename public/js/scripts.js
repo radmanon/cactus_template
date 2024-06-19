@@ -6,10 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuItems = document.querySelectorAll('.menu-item');
     const searchBar = document.getElementById('search-bar');
     const questionContainer = document.getElementById('question-container');
+    const backButton = document.getElementById('back-button');
     const nextButton = document.getElementById('next-button');
+    const navigationButtons = document.getElementById('navigation-buttons');
 
     let currentQuestionIndex = 0;
     let questions = [];
+    let questionHistory = [];
 
     hamburgerMenu.addEventListener('click', () => {
         popupMenu.style.display = 'flex';
@@ -72,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     nextButton.addEventListener('click', showNextQuestion);
+    backButton.addEventListener('click', showPreviousQuestion);
 
     async function fetchQuestions() {
         try {
@@ -82,18 +86,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNextQuestion();
             } else {
                 questionContainer.innerHTML = '<p>No questions available.</p>';
-                nextButton.style.display = 'none';
+                navigationButtons.style.display = 'none';
             }
         } catch (error) {
             console.error('Error fetching questions:', error);
             questionContainer.innerHTML = '<p>Error fetching questions.</p>';
-            nextButton.style.display = 'none';
+            navigationButtons.style.display = 'none';
         }
     }
 
     function showNextQuestion() {
         if (currentQuestionIndex < questions.length) {
             const question = questions[currentQuestionIndex];
+            questionHistory.push(currentQuestionIndex);
             questionContainer.innerHTML = `
                 <div class="product-card">
                     <div class="product-info">
@@ -119,12 +124,14 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                             </div>
                         `;
-                        nextButton.style.display = 'none';
+                        navigationButtons.style.display = 'none';
                     } else {
                         showNextQuestion();
                     }
                 });
             });
+            navigationButtons.style.display = 'flex';
+            backButton.style.display = questionHistory.length > 1 ? 'block' : 'none';
             nextButton.style.display = 'none';
         } else {
             questionContainer.innerHTML = `
@@ -135,7 +142,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
-            nextButton.style.display = 'none';
+            navigationButtons.style.display = 'none';
+        }
+    }
+
+    function showPreviousQuestion() {
+        if (questionHistory.length > 1) {
+            questionHistory.pop();
+            currentQuestionIndex = questionHistory[questionHistory.length - 1];
+            showNextQuestion();
+        } else {
+            questionContainer.innerHTML = '<p>No previous questions available.</p>';
+            backButton.style.display = 'none';
         }
     }
 
