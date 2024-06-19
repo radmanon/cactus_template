@@ -5,8 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.getElementById('main-content');
     const menuItems = document.querySelectorAll('.menu-item');
     const searchBar = document.getElementById('search-bar');
-    const productsContainer = document.getElementById('products');
-    const searchResultContainer = document.getElementById('search-result-container');
+    const questionContainer = document.getElementById('question-container');
+    const nextButton = document.getElementById('next-button');
+
+    let currentQuestionIndex = 0;
+    let questions = [];
 
     hamburgerMenu.addEventListener('click', () => {
         popupMenu.style.display = 'flex';
@@ -18,12 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
         mainContent.style.filter = 'none';
     });
 
-    // Add event listener to each menu item
     menuItems.forEach(item => {
         item.addEventListener('click', () => {
-            // Remove 'selected' class from all menu items
             menuItems.forEach(i => i.classList.remove('selected'));
-            // Add 'selected' class to the clicked menu item
             item.classList.add('selected');
         });
     });
@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return card;
     }
 
-    // Add event listener to the search bar
     searchBar.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             const query = searchBar.value;
@@ -71,4 +70,74 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(error => console.error('Error:', error));
         }
     });
+
+    nextButton.addEventListener('click', showNextQuestion);
+
+    async function fetchQuestions() {
+        try {
+            const response = await fetch('/api/questions');
+            questions = await response.json();
+            console.log("Fetched questions:", questions); // Debugging line
+            if (questions.length > 0) {
+                showNextQuestion();
+            } else {
+                questionContainer.innerHTML = '<p>No questions available.</p>';
+                nextButton.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error fetching questions:', error);
+            questionContainer.innerHTML = '<p>Error fetching questions.</p>';
+            nextButton.style.display = 'none';
+        }
+    }
+
+    function showNextQuestion() {
+        if (currentQuestionIndex < questions.length) {
+            const question = questions[currentQuestionIndex];
+            questionContainer.innerHTML = `
+                <div class="product-card">
+                    <div class="product-info">
+                        <h2>Question</h2>
+                        <p>${question.question}</p>
+                        <div class="option-container">
+                            ${question.options.map(option => `<button class="option-button" data-next-id="${option.nextQuestionId}">${option.text}</button>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            const optionButtons = document.querySelectorAll('.option-button');
+            optionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const nextQuestionId = button.getAttribute('data-next-id');
+                    currentQuestionIndex = questions.findIndex(q => q._id === nextQuestionId);
+                    if (currentQuestionIndex === -1) {
+                        questionContainer.innerHTML = `
+                            <div class="product-card">
+                                <div class="product-info">
+                                    <h2>Thank you!</h2>
+                                    <p>Thank you for answering all the questions!</p>
+                                </div>
+                            </div>
+                        `;
+                        nextButton.style.display = 'none';
+                    } else {
+                        showNextQuestion();
+                    }
+                });
+            });
+            nextButton.style.display = 'none';
+        } else {
+            questionContainer.innerHTML = `
+                <div class="product-card">
+                    <div class="product-info">
+                        <h2>Thank you!</h2>
+                        <p>Thank you for answering all the questions!</p>
+                    </div>
+                </div>
+            `;
+            nextButton.style.display = 'none';
+        }
+    }
+
+    fetchQuestions();
 });
