@@ -1,5 +1,28 @@
 /* Add these new styles */
 
+.search-result-card.question-card {
+    background-color: #ffffff;
+    /* Light green for question cards */
+    border-radius: 20px;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.search-result-card.answer-card {
+    background-color: #d5d5d5;
+    /* Light yellow for answer cards */
+    border-radius: 20px;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 100%;
+    word-wrap: break-word;
+}
 
 .footer-item {
     display: flex;
@@ -145,6 +168,7 @@ main {
     height: 100%;
     top: 0;
     left: 0;
+    flex-shrink: 0; /*nothing can change the size of the sidebar with this line*/
 }
 
 .menu {
