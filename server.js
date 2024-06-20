@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
-const axios = require('axios'); // Import axios
+const axios = require('axios');
 const mongoose = require('mongoose');
-require('dotenv').config(); // Load environment variables from .env
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;

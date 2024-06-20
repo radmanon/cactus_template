@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.getElementById('main-content');
     const menuItems = document.querySelectorAll('.menu-item');
     const searchBar = document.getElementById('search-bar');
+    const searchResultContainer = document.getElementById('search-result-container');
     const questionContainer = document.getElementById('question-container');
     const backButton = document.getElementById('back-button');
     const nextButton = document.getElementById('next-button');
@@ -31,19 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Function to create a card with "Read More" functionality
-    function createCard(title, content) {
+    function createCard(title, content, type) {
         const card = document.createElement('div');
         card.classList.add('search-result-card');
+        card.classList.add(type === 'question' ? 'question-card' : 'answer-card');
         const words = content.split(' ');
         if (words.length > 100) {
             const truncatedContent = words.slice(0, 100).join(' ');
             const remainingContent = words.slice(100).join(' ');
             card.innerHTML = `
-        <h2>${title}</h2>
-        <p>${truncatedContent}<span class="ellipsis">...</span><span class="more-text">${remainingContent}</span></p>
-        <a href="#" class="read-more">Read More</a>
-      `;
+                <h2>${title}</h2>
+                <p>${truncatedContent}<span class="ellipsis">...</span><span class="more-text">${remainingContent}</span></p>
+                <a href="#" class="read-more">Read More</a>
+            `;
             card.querySelector('.read-more').addEventListener('click', (e) => {
                 e.preventDefault();
                 card.querySelector('.ellipsis').style.display = 'none';
@@ -52,9 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } else {
             card.innerHTML = `
-        <h2>${title}</h2>
-        <p>${content}</p>
-      `;
+                <h2>${title}</h2>
+                <p>${content}</p>
+            `;
         }
         return card;
     }
@@ -65,8 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(`/search?q=${query}`)
                 .then(response => response.json())
                 .then(data => {
-                    const questionCard = createCard('Question', query);
-                    const answerCard = createCard('Answer', data.result);
+                    console.log('Search Result:', data); // Log the result for debugging
+                    const questionCard = createCard('Question', query, 'question');
+                    const answerCard = createCard('Answer', data.result, 'answer');
+                    searchResultContainer.innerHTML = ''; // Clear previous results
                     searchResultContainer.appendChild(questionCard);
                     searchResultContainer.appendChild(answerCard);
                 })
