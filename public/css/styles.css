@@ -31,6 +31,108 @@
     margin: 0 10px;
 }
 
+.footer-button {
+    background-color: #e4e3e3;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.footer-button p {
+    margin: 0;
+    font-size: 18px;
+    color: #000;
+}
+
+.footer-button.active {
+    background-color: #2dcfeb;
+}
+
+.back-button {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.back-button:hover {
+    background-color: #e68900;
+}
+
+.option-button {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+.option-button:hover {
+    background-color: #e68900;
+}
+
+.option-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+
+/* Add these new styles */
+
+.search-result-card.question-card {
+    background-color: #ffffff;
+    /* Light green for question cards */
+    border-radius: 20px;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.search-result-card.answer-card {
+    background-color: #d5d5d5;
+    /* Light yellow for answer cards */
+    border-radius: 20px;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.footer-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 10px;
+}
+
 .footer-card {
     background-color: #e4e3e3;
     border-radius: 10px;
